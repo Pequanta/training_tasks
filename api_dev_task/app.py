@@ -7,11 +7,13 @@ from routes.products import router as products
 
 
 #config is not working here
-# DB_URL = config('DB_URL', str)
-# DB_NAME= config('DB_NAME', str)
+DB_URL = config('DB_URL', str)
+DB_NAME= config('DB_NAME', str)
 
-DB_URL="mongodb+srv://penielyohannes:Ragnarock@abyssinian-chat.xwwlo.mongodb.net/?retryWrites=true&w=majority&appName=abyssinian-chat"
-DB_NAME="IcogEcommerce"
+# DB_URL="mongodb+srv://penielyohannes:Ragnarock@abyssinian-chat.xwwlo.mongodb.net/?retryWrites=true&w=majority&appName=abyssinian-chat"
+# DB_NAME="IcogEcommerce"
+print("URL : " , DB_URL)
+print("DB_NAME : " , DB_NAME)
 CORSMiddleware
 origins = [
     "*"
