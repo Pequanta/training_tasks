@@ -10,7 +10,7 @@ from routes.products import router as products
 # DB_URL = config('DB_URL', str)
 # DB_NAME= config('DB_NAME', str)
 
-DB_URL = "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.3"
+DB_URL="mongodb+srv://penielyohannes:Ragnarock@abyssinian-chat.xwwlo.mongodb.net/?retryWrites=true&w=majority&appName=abyssinian-chat"
 DB_NAME="IcogEcommerce"
 CORSMiddleware
 origins = [

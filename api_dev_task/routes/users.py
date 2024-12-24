@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, HTTPException
 from fastapi import Body, Path
 from typing import Dict, List
 from models import UserDataModel, PyObjectId
-from pymongo.errors import DuplicateKeyError 
+from pymongo.errors import DuplicateKeyError , PyMongoError
 import logging 
 router = APIRouter()
 
@@ -10,11 +10,15 @@ router = APIRouter()
 @router.get("/{user_id}")
 async def get_user(request: Request, user_id: PyObjectId=Path(...)):
     try:
+        print("here")
         if (user := await request.app.mongodb["users"].find_one({"_id": user_id})) != None:
             user["_id"] = str(user["_id"])
             return user
         else:
             return HTTPException(status_code=404 , detail="user not found")
+    except PyMongoError as e:
+            logging.exception(f"MongoDB error: {str(e)}")
+            raise HTTPException(status_code=500, detail="MongoDB operation failed") from e
     except:
         return HTTPException(status_code=409, detail="Error with the CRUD operations")
     
@@ -32,6 +36,9 @@ async def create_user(request: Request, user: UserDataModel=Body(...)):
             return HTTPException(status_code=409, detail="The user already exists")
     except DuplicateKeyError:
         logging.error("The user name must be unique")
+    except PyMongoError as e:
+            logging.exception(f"MongoDB error: {str(e)}")
+            raise HTTPException(status_code=500, detail="MongoDB operation failed") from e
     except:
         logging.error("Something went wrong with the server!!!!!")
         return HTTPException(status_code=409, detail="Error with the CRUD operations")
@@ -47,6 +54,9 @@ async def update_user(request: Request, new_user: UserDataModel, user_id: PyObje
             await request.app.mongodb["users"].replace_one({"_id": user_id}, new_user)
         else:
             return HTTPException(status_code=404, detail="The user with the given id doesn't exist")
+    except PyMongoError as e:
+        logging.exception(f"MongoDB error: {str(e)}")
+        raise HTTPException(status_code=500, detail="MongoDB operation failed") from e
     except:
         return HTTPException(status_code=409, detail="Error with the CRUD operations")
     
@@ -61,6 +71,9 @@ async def update_user_data(request: Request, user_id: PyObjectId=Path(...) ,upda
                     })
         else:
             return HTTPException(status_code=404)
+    except PyMongoError as e:
+        logging.exception(f"MongoDB error: {str(e)}")
+        raise HTTPException(status_code=500, detail="MongoDB operation failed") from e
     except:
         return {"Message": "Error with the CRUD operations"}
     pass    
@@ -71,5 +84,8 @@ async def remove_user(request: Request , user_id: PyObjectId=Path(...)):
             await request.app.mongodb["users"].delete_one({"_id": user_id})
         else:
             return HTTPException(status_code=404)
+    except PyMongoError as e:
+        logging.exception(f"MongoDB error: {str(e)}")
+        raise HTTPException(status_code=500, detail="MongoDB operation failed") from e
     except:
         return {"Message": "Error with the CRUD operations"}

@@ -27,4 +27,4 @@ class ProductBase(MongoBaseModel):
 class ProductDataModel(ProductBase):
         pass
 class UserDataModel(UserBase):
-        purchased_items: List[PyObjectId]
+        purchased_products: List[str]
