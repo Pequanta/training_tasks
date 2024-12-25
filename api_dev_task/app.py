@@ -1,17 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from decouple import Config, config, RepositoryEnv
+from decouple import config
 from motor.motor_asyncio import AsyncIOMotorClient
 from routes.users import router as users
 from routes.products import router as products
 
 
-#config is not working here
-# DB_URL = config('DB_URL', str)
-# DB_NAME= config('DB_NAME', str)
 
-DB_URL="mongodb+srv://penielyohannes:Ragnarock@abyssinian-chat.xwwlo.mongodb.net/?retryWrites=true&w=majority&appName=abyssinian-chat"
-DB_NAME="IcogEcommerce"
+DB_URL=config('DB_URL', str)
+DB_NAME=config('DB_NAME', str)
+
 CORSMiddleware
 origins = [
     "*"
