@@ -1,23 +1,19 @@
+
 from fastapi import APIRouter, Request, HTTPException
 from fastapi import Body, Path
-from fastapi.encoders import jsonable_encoder
 from typing import Dict
 from models import ProductDataModel, PyObjectId
 from pymongo.errors import DuplicateKeyError , PyMongoError
 import logging 
 router = APIRouter()
 
+
 @router.get("/{product_id}")
 async def get_product(request: Request, product_id: PyObjectId=Path(...)):
-    print(product_id)
-    if (product_from_cache := await request.app.redis.get(str(product_id))) != None:
-        return jsonable_encoder(product_from_cache)
-    
     try:
         print("here")
         if (product := await request.app.mongodb["products"].find_one({"_id": product_id})) != None:
             product["_id"] = str(product["_id"])
-            print("here")
             return product
         else:
             return HTTPException(status_code=404 , detail="product not found")
@@ -56,8 +52,6 @@ async def update_product(request: Request, new_product: ProductDataModel, produc
     try:
         if (await request.app.mongodb["products"].find_one({"_id": product_id})) != None:
             new_product["_id"] = product_id
-            ##the cache is updated with the new data:
-            await request.app.redis.set(product_id, new_product)
             await request.app.mongodb["products"].replace_one({"_id": product_id}, new_product)
         else:
             return HTTPException(status_code=404, detail="The product with the given id doesn't exist")
@@ -70,18 +64,12 @@ async def update_product(request: Request, new_product: ProductDataModel, produc
     
 @router.patch("/{product_id}")
 async def update_product_data(request: Request, product_id: PyObjectId=Path(...) ,updated_data: Dict[str, str | float]=Body(...)):
-    try: 
-        updated_data = {}
-        if (product:= await request.app.mongodb["products"].find_one({"_id": product_id})) != None:
+    try:
+        if (await request.app.mongodb["products"].find_one({"_id": product_id})) != None:
             for field in updated_data:
                 await request.app.mongodb["products"].update_one({"_id": product_id}, {
                     "$set": {field: updated_data[field]}
                     })
-                updated_data[field] = updated_data
-            for field in product:
-                if field in updated_data:
-                    product[field] = updated_data[field]
-            await request.app.redis.set(product["_id"], product)
         else:
             return HTTPException(status_code=404)
     except PyMongoError as e:
