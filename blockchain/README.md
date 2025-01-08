@@ -10,7 +10,6 @@ This application is a Python-based blockchain system built with **FastAPI** and 
 - Create and validate transactions.  
 - Mine blocks and add them to the blockchain.  
 - Manage unspent transaction outputs (UTXOs).  
-- Wallet support for secure transaction signing.  
 
 ---
 
@@ -42,7 +41,7 @@ This application is a Python-based blockchain system built with **FastAPI** and 
 #### **Run the Application**  
 1. Start the server:  
    ```bash  
-   uvicorn main:app --reload  
+   python3 main.py # On windows, use 'python  main.py' 
    ```  
 
 2. Access the API:  
@@ -67,7 +66,7 @@ This application is a Python-based blockchain system built with **FastAPI** and 
 ```plaintext  
 blockchain-app/  
 ├── main.py           # Application entry point  
-├── models/           # Blockchain, Block, Transaction, Wallet, UTXO models  
+├── models.py           # Blockchain, Block, Transaction, Wallet, UTXO models  
 ├── utils/            # Cryptographic and helper functions  
 ├── requirements.txt  # Dependencies  
 └── README.md         # Documentation  

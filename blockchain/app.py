@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes.end_points import router
-from helper_functions.utxo_operations import UTXO_Operation
-from helper_functions.block_functions import Blockchain
+from utils.utxo_operations import UTXO_Operation
+from utils.block_functions import Blockchain
 from models import Transaction
 from typing import List
 
