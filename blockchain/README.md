@@ -1,6 +1,6 @@
 ### **Blockchain Application**  
 
-This application is a Python-based blockchain system built with **FastAPI** and **Pydantic**, enabling users to create and manage transactions, mine blocks, and interact with a decentralized ledger.
+This application is a Python-based blockchain system built with **FastAPI** and **Pydantic**, enabling users to create and manage transactions and mine blocks.
 
 ---
 
