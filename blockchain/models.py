@@ -2,26 +2,7 @@ from typing import List, Set,Optional
 from pydantic import BaseModel, Field
 from uuid import UUID
 from datetime import datetime
-import hashlib
 
-
-def hash_data(data: str) -> str:
-    """Hash data using SHA256."""
-    return hashlib.sha256(data.encode()).hexdigest()
-
-
-class Proof(BaseModel):
-    """Represents a proof for a UTXO in the accumulator."""
-    value: str
-    proof_path: List[str] = Field(default_factory=list)
-
-    def verify(self, root: str) -> bool:
-        """Verify the proof against the accumulator's root."""
-        current_hash = self.value
-        for sibling in self.proof_path:
-            combined = sorted([current_hash, sibling])  # Ensure consistent order
-            current_hash = hash_data(combined[0] + combined[1])
-        return current_hash == root
 
 class UTXO(BaseModel):
     """Represents an unspent transaction output (UTXO)."""
@@ -36,21 +17,15 @@ class UTXOSet(BaseModel):
     """Represents a collection of UTXOs."""
     utxos: Set[UTXO] = Field(default_factory=list, description="List of UTXOs.")
 
-class TransactionInput(BaseModel):
-    transaction_id: str
-    output_index: int
-    signature: str
-
-class TransactionOutput(BaseModel):
-    recipient: str
-    amount: float
-    output_index: int
-
 class Transaction(BaseModel):
     transaction_id: str
-    inputs: List[TransactionInput]
-    outputs: List[TransactionOutput]
+    sender: str
+    reciever: str
+    inputs: List[UTXO]
+    outputs: List[UTXO]
     timestamp: datetime
+    amount: float
+    signature: str
 
 class Block(BaseModel):
     index: int
@@ -59,14 +34,6 @@ class Block(BaseModel):
     previous_hash: str
     nonce: int
     hash: str
-
-class UTXO(BaseModel):
-    transaction_id: str
-    output_index: int
-    recipient: str
-    amount: float
-    spent: bool = False
-
 class Wallet(BaseModel):
     address: str
     private_key: str
@@ -76,11 +43,3 @@ class Blockchain(BaseModel):
     chain: List[Block]
     difficulty: int
     pending_transactions: List[Transaction]
-
-class Node(BaseModel):
-    node_id: str
-    host: str
-    port: int
-    peers: List["Node"]
-class Hash(BaseModel):
-    hash_val: str

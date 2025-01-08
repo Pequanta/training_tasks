@@ -1,6 +1,7 @@
 import hashlib
 import time
-from models import Block
+from models import Block, Transaction
+from typing import List
 class Blockchain:
     def __init__(self, difficulty=3):
         self.chain = []
@@ -9,28 +10,31 @@ class Blockchain:
 
     def create_genesis_block(self):
         # Creating the first block (genesis block)
-        genesis_block = Block(0, "0", int(time.time()), "Genesis Block", self.hash_block(0, "0", int(time.time()), "Genesis Block", 0), 0)
+        cont_data = {"index": 0, "timestamp" : int(time.time()), "transactions": [], "previous_hash": "", "nonce": 0, "hash": ""}
+        genesis_block = Block(**cont_data)
         self.chain.append(genesis_block)
 
-    def hash_block(self, index, previous_hash, timestamp, data, nonce):
+    def hash_data(self,data, nonce, previous_hash):
         """
         This method takes the block's information and generates a hash.
         The hashing algorithm used here is SHA-256.
         """
-        block_string = f"{index}{previous_hash}{timestamp}{data}{nonce}".encode('utf-8')
+        cont_data = ""
+        for data_val in data:
+            cont_data += str(data_val)
+        block_string = f"{cont_data}{nonce}{previous_hash}".encode('utf-8')
         return hashlib.sha256(block_string).hexdigest()
 
-    def mine_block(self, index, previous_hash, timestamp, data):
+    def mine(self, data, previous_hash):
         """
         This method finds the correct nonce for the block such that the hash has leading zeros equal to the difficulty.
         """
         nonce = 0
-        hash_result = self.hash_block(index, previous_hash, timestamp, data, nonce)
-
+        hash_result = self.hash_data(data, nonce, previous_hash)
         # Mine until we find a hash with the required number of leading zeros
         while not hash_result.startswith('0' * self.difficulty):
             nonce += 1
-            hash_result = self.hash_block(index, previous_hash, timestamp, data, nonce)
+            hash_result = self.hash_data(data, nonce, previous_hash)
 
         return nonce, hash_result
 
@@ -39,26 +43,15 @@ class Blockchain:
         new_index = last_block.index + 1
         new_timestamp = int(time.time())
 
+        data["timestamp"] = str(new_timestamp)
+        data["previous_hash"] = data["previous_hash"] 
+        data["index"] = new_index
         # Mine a new block with the given data
-        nonce, new_hash = self.mine_block(new_index, last_block.hash, new_timestamp, data)
+        nonce, new_hash = self.mine(data, data["previous_hash"])
+        data["nonce"] = nonce 
+        data["hash"] = new_hash
 
         # Creating new block and adding it to the chain
-        new_block = Block(new_index, last_block.hash, new_timestamp, data, new_hash, nonce)
-        self.chain.append(new_block)
+        new_block = Block(**data)
+        return new_block
 
-    def print_blockchain(self):
-        for block in self.chain:
-            print(f"Block {block.index}:")
-            print(f"  Previous Hash: {block.previous_hash}")
-            print(f"  Timestamp: {block.timestamp}")
-            print(f"  Data: {block.data}")
-            print(f"  Hash: {block.hash}")
-            print(f"  Nonce: {block.nonce}\n")
-
-
-# # Example usage:
-# blockchain = Blockchain(difficulty=3)
-# blockchain.add_block("First transaction data")
-# blockchain.add_block("Second transaction data")
-
-# blockchain.print_blockchain()

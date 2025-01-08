@@ -10,10 +10,13 @@ def generate_keys():
     public_key = private_key.public_key()
     return public_key, private_key
 
-def sign_in_with_key(private_key, message):
-    message = message.encode('utf-8')
+def sign_in_with_key(private_key, data):
+    cont_message = ""
+    for message in data:
+        cont_message += str(message)
+    cont_message = cont_message.encode('utf-8')
     signature = private_key.sign(
-    message,
+    cont_message,
     padding.PSS(
         mgf=padding.MGF1(hashes.SHA256()),
         salt_length=padding.PSS.MAX_LENGTH
