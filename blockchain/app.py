@@ -15,6 +15,7 @@ def lifespan(app: FastAPI):
     #The following initializations create a block chain list and a utxo set that will be used throughout the application
     app.block_chain = Blockchain()
     app.utxo_set = UTXO_Operation()
+    #Until the mining is done , the transactions pend in the following list
     app.open_transactions = List[Transaction]
     yield
     app.block_chain.chain.clear()

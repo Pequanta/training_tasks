@@ -9,25 +9,6 @@ class UTXO_Operation:
             """Add a new UTXO to the set."""
             self.utxos.append(utxo)
 
-    def spend_utxo(self, transaction_id: UUID, index: int) -> bool:
-        """
-        Mark a UTXO as spent based on transaction ID and index.
-
-        Args:
-            tx_id (UUID): Transaction ID of the UTXO to spend.
-            index (int): Index of the UTXO in the transaction.
-
-        Returns:
-            bool: True if the UTXO was successfully spent, False if not found.
-        """
-        for utxo in self.utxos:
-            if utxo.tx_id == transaction_id and utxo.index == index:
-                if utxo.spent:
-                    raise ValueError("UTXO is already spent.")
-                utxo.spent = True
-                return True
-        return False
-
     def get_balance(self, address: str) -> int:
         """
         Calculate the total balance for a given address.

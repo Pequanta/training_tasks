@@ -18,28 +18,41 @@ class UTXOSet(BaseModel):
     utxos: Set[UTXO] = Field(default_factory=list, description="List of UTXOs.")
 
 class Transaction(BaseModel):
-    transaction_id: str
-    sender: str
-    reciever: str
-    inputs: List[UTXO]
-    outputs: List[UTXO]
-    timestamp: datetime
-    amount: float
-    signature: str
+    """
+    Represents a single transaction in the blockchain.
+    """
+    transaction_id: str = Field(..., description="Unique identifier for the transaction.")
+    sender: str = Field(..., description="Public key or address of the sender initiating the transaction.")
+    reciever: str = Field(..., description="Public key or address of the receiver.")
+    inputs: List["UTXO"] = Field(..., description="List of UTXOs used as inputs for the transaction.")
+    outputs: List["UTXO"] = Field(..., description="List of UTXOs created as outputs from the transaction.")
+    timestamp: datetime = Field(..., description="Timestamp indicating when the transaction was created.")
+    amount: float = Field(..., ge=0, description="Amount of cryptocurrency being transferred.")
+    signature: str = Field(..., description="Digital signature of the transaction, ensuring its authenticity.")
 
 class Block(BaseModel):
-    index: int
-    timestamp: datetime
-    transactions: List[Transaction]
-    previous_hash: str
-    nonce: int
-    hash: str
+    """
+    Represents a block in the blockchain.
+    """
+    index: int = Field(..., description="Index of the block in the blockchain.")
+    timestamp: datetime = Field(..., description="Timestamp when the block was created.")
+    transactions: List[Transaction] = Field(..., description="List of transactions included in the block.")
+    previous_hash: str = Field(..., description="Hash of the previous block in the chain.")
+    nonce: int = Field(..., description="Nonce used in the proof-of-work algorithm for mining the block.")
+    hash: str = Field(..., description="Hash of the current block.")
+
 class Wallet(BaseModel):
-    address: str
-    private_key: str
-    public_key: str
+    """
+    Represents a user's wallet for managing cryptocurrency.
+    """
+    address: str = Field(..., description="Unique address of the wallet, derived from the public key.")
+    private_key: str = Field(..., description="Private key for signing transactions.")
+    public_key: str = Field(..., description="Public key for verifying transactions and generating the wallet address.")
 
 class Blockchain(BaseModel):
-    chain: List[Block]
-    difficulty: int
-    pending_transactions: List[Transaction]
+    """
+    Represents the blockchain and its core properties.
+    """
+    chain: List[Block] = Field(..., description="List of all blocks in the blockchain.")
+    difficulty: int = Field(..., ge=0, description="Difficulty level for mining new blocks.")
+    pending_transactions: List[Transaction] = Field(default_factory=list, description="List of transactions awaiting inclusion in a mined block.")

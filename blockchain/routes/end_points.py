@@ -50,31 +50,40 @@ async def mine_block(request: Request, block: Block):
         raise HTTPException(status_code=404)
    
 @router.post("/new-transaction")
-async def add_new_transaction(request: Request, amount: float, sender: str, reciever: str, user_data: Wallet, transaction_id: str) -> Transaction:
+async def add_new_transaction(request: Request, amount: float,reciever: str,  sender: str, reciever_public_key: str, user_data: Wallet, transaction_id: str) -> Transaction:
     try:
+        #The transactions are done based on the defined model in the models.py
         user_utxos = request.app.utxo_set.get_utxos_by_address(user_data["public_key"])
         user_balance = request.app.utxo_set.get_balance(user_data["public_key"])
         output_utxos = []
+        reciever_utxo = set()
         if user_balance > amount:
             sum_cont = 0
             for utxo in user_utxos:
                if sum_cont >= amount:
                     return {"message": "successful transaction"}
                sum_cont += utxo["amount"]
+               ##If the utxos are spent , they will be assinged spent to make sure they are not used for another transaction 
                utxo.spent = True
                output_utxos.append(utxo)
+               ##After the output utxos are spent the reciever will claim the utxos
+               utxo.address = reciever_utxo
+               reciever_utxo.add(utxo)
         else:
             return {"Message" : "insufficient amount for transaction"}
         transaction = {"id": transaction_id, "sender": sender, "reciever": reciever}
         transaction["inputs"] = user_utxos
         transaction["outputs"] = output_utxos
         transaction["signature"] = key_functions.sign_in_with_key(transaction["private_key"], transaction)
+        for utxo in reciever_utxo:
+            request.app.utxo_set.add(utxo)
 
         return request.app.open_transactions(Transaction(**transaction))
     except:
         raise HTTPException(status_code=401, detail="Could not able to add the transaction")
 @router.post("/add-block")
 async def add_new_block(request: Request, block: Block):
+    #The block should be added after its mined, if it isn't the method returns an error
     try:
         if block.hash.startswith("000"):
             request.app.block_chain.chain.append(block)
