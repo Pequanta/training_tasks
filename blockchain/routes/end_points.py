@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.encoders import jsonable_encoder
 from models import Block, Wallet, Transaction
-from typing import List, Dict
+from typing import List
 from utils import key_functions
+
 router = APIRouter()
 
 
