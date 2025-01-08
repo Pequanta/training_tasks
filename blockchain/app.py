@@ -13,6 +13,8 @@ ProgramFlow:
     2. When Someone wants to mine a block they will verify the transactions and do the proof of work(mining) and the endpoint 
        that does mining , i.e. mine-block, returns the mined block
     3. The miner then passes this mined block to the add-block endpoint and this ends the process by appending the mined block to the block_chain
+
+    !!!!! ##The End points are in the end_points file within the routes directory
 """
 CORSMiddleware
 origins = [

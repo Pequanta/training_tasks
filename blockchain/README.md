@@ -45,19 +45,19 @@ This application is a Python-based blockchain system built with **FastAPI** and 
    ```  
 
 2. Access the API:  
-   - Swagger Docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)  
-   - ReDoc Docs: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)  
+   - Swagger Docs: [http://127.0.0.1:8000/docs] 
+   - ReDoc Docs: [http://127.0.0.1:8000/redoc] 
 
 ---
 
 ### **API Endpoints**  
 
-- **GET `/chain`**: Retrieve the blockchain.  
-- **POST `/mine-block`**: Mine a new block.  
-  - Input: `Block` object  
-- **POST `/new-transaction`**: Add a new transaction.  
+- **GET `/block-chain/chain`**: Retrieve the blockchain.  
+- **POST `/block-chain/mine-block`**: Mine a new block.  
+  - Input: `/block-chainBlock` object  
+- **POST `/block-chain/new-transaction`**: Add a new transaction.  
   - Input: Sender, receiver, amount, and UTXOs.  
-- **POST `/add-block`**: Add a mined block to the blockchain.  
+- **POST `/block-chain/add-block`**: Add a mined block to the blockchain.  
 
 ---
 
@@ -65,6 +65,8 @@ This application is a Python-based blockchain system built with **FastAPI** and 
 
 ```plaintext  
 blockchain-app/  
+├──routes/
+   ├──end_points.py  #/chain /new-transaction /mine-block /add-block
 ├── main.py           # Application entry point  
 ├── models.py           # Blockchain, Block, Transaction, Wallet, UTXO models  
 ├── utils/            # Cryptographic and helper functions  
