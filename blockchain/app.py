@@ -6,7 +6,14 @@ from helper_functions.block_functions import Blockchain
 from models import Transaction
 from typing import List
 
-
+"""
+ProgramFlow:
+    Prior to any process, the block_chain is initialized with a genesis block
+    1. Transactions are created and stored in request.app.open_transactions through the 'new-transaction' endpoint
+    2. When Someone wants to mine a block they will verify the transactions and do the proof of work(mining) and the endpoint 
+       that does mining , i.e. mine-block, returns the mined block
+    3. The miner then passes this mined block to the add-block endpoint and this ends the process by appending the mined block to the block_chain
+"""
 CORSMiddleware
 origins = [
     "*"
