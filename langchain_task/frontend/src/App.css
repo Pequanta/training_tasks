@@ -41,13 +41,15 @@
 
 .apply-button{
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
+  align-content: center;
+  padding: 10px;
 }
 .apply-button input{
   border: 1px solid white;
-  margin-top: 2rem;
   border-radius: 1rem;
   width: 5rem;
+  font-size: 1rem;
   cursor: pointer;
 }
 
@@ -64,8 +66,23 @@
   height: 80%;
   background-color: rgb(3, 6, 8);
   border-radius: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
 }
 
+
+.chat-display-div .chat-content{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 50%;
+  padding: 2rem;
+  text-align: center;
+  overflow: hidden;
+}
 
 .chat-box .chat-input-div{
   width: 90%;
