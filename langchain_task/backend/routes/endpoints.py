@@ -21,8 +21,8 @@ async def get_dorner_parameters(request: Request):
     return {"message": request.app.dorner_parameters }
 
 
-@router.post("/dorner-parameters")
-async def adjust_dorner_parameters(request: Request, paramters: Dict[str, int]= Body(...)):
+@router.post("/parameters")
+async def adjust_model_parameters(request: Request, paramters: Dict[str, int]= Body(...)):
     #The dorner parameters are set according to the users adjustment in the following part. 
     for paramter in paramters:
         request.app.dorner_parameters[paramter] = paramters[paramter]
