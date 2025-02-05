@@ -14,14 +14,6 @@ llm =ChatTogether(
 
 
 
-
-@router.get("/llm-parameters")
-async def get_dorner_parameters(request: Request):
-    #This will simply returns the dorner_parameters set by the user
-    return {"message": request.app.input_parameters}
-
-
-
 @router.post("/llm-response")
 async def get_ai_response(request: Request, user_request: str):
     try:

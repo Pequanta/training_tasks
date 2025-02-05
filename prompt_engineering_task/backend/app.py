@@ -46,7 +46,7 @@ def lifespan(app: FastAPI):
     app.history = ChatMessageHistory()
     
     yield
-    app.dorner_parameters.clear()
+    app.input_parameters.clear()
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(router, prefix="/llm-response", tags=["llm-response"])
