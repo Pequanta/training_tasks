@@ -9,21 +9,6 @@ function App() {
 
   const [backendApi, setBackendApi] = useState("http://0.0.0.0:8000/llm-response")
 
-  const adjustDornerParameters = async () =>{
-    const response = await fetch(backendApi + "/dorner-parameters", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(dornerParameters)
-    }); 
-    const data = await response.json();
-    setEmotionLevel({
-      "sadness": data[0][data[0].length - 1],
-      "anger": data[1][data[1].length - 1]
-    })
-  }
-
   const getLlmResponse = async () =>{
     const response = await fetch(backendApi + `/llm-response?user_request=${userRequest}`, {
       method: 'POST'
